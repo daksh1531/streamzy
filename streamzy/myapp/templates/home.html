@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Streaming Website</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Video Streaming Website</h1>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <section class="add-video">
+                <h2>Add Video</h2>
+                <form method="post" action="{% url 'add_video' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" placeholder="Enter video title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" placeholder="Enter video description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-file">Video File</label>
+                        <input type="file" id="video-file" name="video_file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Video</button>
+                </form>
+            </section>
+            <section class="video-list">
+                <h2>Video List</h2>
+                {% for video in videos %}
+                    <article class="video">
+                        <h3>{{ video.title }}</h3>
+                        <p class="description">{{ video.description }}</p>
+                        <video src="{{ video.video_file.url }}" controls></video>
+                        <form method="post" action="{% url 'delete_video' video.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </article>
+                {% empty %}
+                    <p>No videos uploaded yet.</p>
+                {% endfor %}
+            </section>
+        </div>
+    </main>
+</body>
+</html>
